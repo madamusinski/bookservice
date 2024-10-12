@@ -1,0 +1,67 @@
+version: '3'
+
+services:
+  book-management-service:
+    container_name: book-management-service
+    image: book-management-service:latest
+    depends_on:
+      - mongodb
+      - kafka
+    ports:
+      - '8082:8082'
+  book-rental-information-service:
+    container_name: book-rental-information-service
+    image: book-rental-information-service:latest
+    depends_on:
+      - postgresdb
+      - kafka
+    ports:
+      - '8083:8083'
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.4
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+  kafka:
+    image: confluentinc/cp-kafka:7.4.4
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:19092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  mongodb:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: pass
+      MONGO_NON_ROOT_USERNAME=: user
+      MONGO_NON_ROOT_PASSWORD: pass
+      MONGO_INITDB_DATABASE: books
+    volumes:
+      - mongo_data:/data/db
+
+  postgresdb:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  mongo_data:
+  postgres_data:

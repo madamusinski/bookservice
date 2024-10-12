@@ -1,0 +1,9 @@
+spring:
+  kafka:
+    bootstrap-servers: kafka:19092
+    consumer:
+      group-id: docker-book-event-update-notification
+  datasource:
+    url: jdbc:postgresql://postgresdb:5432/db
+    username: postgres
+    password: ${DB_PASSWORD:postgres}

@@ -1,0 +1,60 @@
+Żeby uruchomić należy posiadać Docker lub DockerDesktop zainstalowane i uruchomione.
+W projekcie wykorzystana jest java 21
+
+
+Żeby zbudować obrazy dockera dla serwisów należy:
+
+Ustawić się w root projektu czyli w /Monorepo-book
+
+następnie:
+
+W przypadku korzystania z Windows 10/11
+
+uruchomić ./run.ps1 co spowoduje zbudowanie projektu oraz jarów mavenem wraz z obrazami dockera i uruchomienie kontenerów
+
+
+W przypadku korzystania z Linuxa/macOS uruchomić:
+chmod +x run.sh - nadać uprawnienia wykonywania pliku
+./run.sh
+
+
+
+W razie gdyby którykolwiek skrypt nie działał wprowadzać polecenia poniżej ręcznie
+z terminala zaczynając od ustawienia się w root project(Monorepo-book)
+
+Uruchomić komendę mvn clean package żeby stworzyć pliki .jar z serwisami
+cd book-management-service\
+docker build --platform linux/amd64 -t book-management-service .
+
+kolejno dla book-rental-information
+
+cd ..\book-rental-information-service\
+docker build --platform linux/amd64 -t book-rental-information-service .
+
+cofnąć się do roota
+
+cd ..
+
+i uruchomić komendę docker compose up
+
+serwisy powinny wstać kolejno
+
+
+kolejno można przetestować działanie funkcjonowania serwisów
+
+
+GET: http://localhost:8082/book
+POST: http://localhost:8082/book
+requestBody:
+{
+    "title":"Limes inferior",
+    "author":"Janusz A. Zajdel",
+    "isbn": "2345655567897",
+    "category":"Sci-fi"
+}
+
+PUT: http://localhost:8082/book?clientName=Jan Kowalski&isbn=2345655567897
+GET http://localhost:8083/book - zwraca tylko wypożyczone książki
+
+
+W konsoli na serwisach po dostaniu się na konternet można sprawdzić logowanie przesyłania kafką eventów.

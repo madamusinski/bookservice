@@ -1,0 +1,21 @@
+server:
+  port: 8082
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:29092
+  data:
+    mongodb:
+      database: books
+      host: localhost
+      authentication-database: admin
+      username: root
+      password: pass
+      auto-index-creation: true
+  jpa:
+    open-in-view: false
+
+
+notification:
+  kafka:
+    topic: book.event-notification.update

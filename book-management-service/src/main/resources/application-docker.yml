@@ -1,0 +1,6 @@
+spring:
+  kafka:
+    bootstrap-servers: kafka:19092
+  data:
+    mongodb:
+      host: mongodb
